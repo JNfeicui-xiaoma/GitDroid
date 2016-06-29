@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.feicui.gitdroid.R;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
