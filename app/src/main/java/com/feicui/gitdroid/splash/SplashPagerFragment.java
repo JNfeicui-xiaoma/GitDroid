@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.feicui.gitdroid.R;
 import com.feicui.gitdroid.splash.pager.Pager2;
@@ -39,6 +40,13 @@ public class SplashPagerFragment extends Fragment {
     @Bind(R.id.content)
     FrameLayout mFrameLayout;
 
+    @Bind(R.id.layoutPhone)
+    FrameLayout layoutPhone;
+    @Bind(R.id.ivPhoneBlank)
+    ImageView ivPhoneBlank;
+    @Bind(R.id.ivPhone)
+    ImageView ivtPhone;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,9 +63,39 @@ public class SplashPagerFragment extends Fragment {
 
         mViewPager.setAdapter(mAdapter);
         mViewPager.addOnPageChangeListener(onPageChangeListener);
+        mViewPager.addOnPageChangeListener(phoneViewHandle);
         mIndicator.setViewPager(mViewPager);
     }
-//此监听主要负责背景颜色的渐变  和最后一个页面视图动画的显示
+
+    private ViewPager.OnPageChangeListener phoneViewHandle=new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            if (position==0){
+                float scale=0.3f+positionOffset*0.7f;
+                layoutPhone.setScaleX(scale);
+                layoutPhone.setScaleY(scale);
+                ivtPhone.setAlpha(positionOffset);
+                int scroll= (int) ((positionOffset-1)*400);
+                layoutPhone.setTranslationX(scroll);
+                return;
+            }
+            if (position==1){
+                layoutPhone.setTranslationX(-positionOffsetPixels);
+                return;
+            }
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    };
+    //此监听主要负责背景颜色的渐变  和最后一个页面视图动画的显示
     private ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
         //ARGB取值器
         final ArgbEvaluator mEvaluator = new ArgbEvaluator();
@@ -72,7 +110,7 @@ public class SplashPagerFragment extends Fragment {
                 return;
             }
             //从第二个页面到第三个页面
-            if (position==1){
+            if (position == 1) {
                 int color = (int) mEvaluator.evaluate(positionOffset, colorGreen, colorRed);
                 mFrameLayout.setBackgroundColor(color);
                 return;
@@ -83,8 +121,8 @@ public class SplashPagerFragment extends Fragment {
         @Override
         public void onPageSelected(int position) {
             //显示最后一个页面的视图效果
-            if (position==2){
-                Pager2 pager2= (Pager2) mAdapter.getView(2);
+            if (position == 2) {
+                Pager2 pager2 = (Pager2) mAdapter.getView(2);
                 pager2.showAnimation();
             }
         }
