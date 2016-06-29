@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.feicui.gitdroid.R;
+import com.feicui.gitdroid.splash.pager.Pager2;
 
 import butterknife.Bind;
 import butterknife.BindColor;
@@ -56,13 +57,14 @@ public class SplashPagerFragment extends Fragment {
         mViewPager.addOnPageChangeListener(onPageChangeListener);
         mIndicator.setViewPager(mViewPager);
     }
-
+//此监听主要负责背景颜色的渐变  和最后一个页面视图动画的显示
     private ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
         //ARGB取值器
         final ArgbEvaluator mEvaluator = new ArgbEvaluator();
 
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            //第一个到第二个页面
             if (position == 0) {
                 //颜色取蓝色和绿色的中间值  偏移量position [0-1]
                 int color = (int) mEvaluator.evaluate(positionOffset, colorBlue, colorGreen);
@@ -80,7 +82,11 @@ public class SplashPagerFragment extends Fragment {
 
         @Override
         public void onPageSelected(int position) {
-
+            //显示最后一个页面的视图效果
+            if (position==2){
+                Pager2 pager2= (Pager2) mAdapter.getView(2);
+                pager2.showAnimation();
+            }
         }
 
         @Override

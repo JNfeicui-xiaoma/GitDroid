@@ -5,9 +5,9 @@ import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.feicui.gitdroid.splash.pager.pager0;
-import com.feicui.gitdroid.splash.pager.pager1;
-import com.feicui.gitdroid.splash.pager.pager2;
+import com.feicui.gitdroid.splash.pager.Pager0;
+import com.feicui.gitdroid.splash.pager.Pager1;
+import com.feicui.gitdroid.splash.pager.Pager2;
 
 /**
  * Created by Administrator on 2016/6/28.
@@ -16,9 +16,9 @@ public class SplashPagerAdapter extends PagerAdapter {
     private final View[] mViews;
     public SplashPagerAdapter(Context context){
         mViews=new View[]{
-                new pager0(context),
-                new pager1(context),
-                new pager2(context)
+                new Pager0(context),
+                new Pager1(context),
+                new Pager2(context)
         };
     }
     @Override

@@ -10,18 +10,18 @@ import com.feicui.gitdroid.R;
 /**
  * Created by Administrator on 2016/6/28.
  */
-public class pager1 extends FrameLayout {
-    public pager1(Context context) {
+public class Pager1 extends FrameLayout {
+    public Pager1(Context context) {
         super(context);
         init();
     }
 
-    public pager1(Context context, AttributeSet attrs) {
+    public Pager1(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public pager1(Context context, AttributeSet attrs, int defStyleAttr) {
+    public Pager1(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
