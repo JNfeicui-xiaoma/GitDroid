@@ -15,11 +15,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
- * Created by Administrator on 2016/6/28.
+ * Created by Administrator on 2016/6/29.
  */
 public class Pager2 extends FrameLayout {
-
-    @Bind(R.id.ivBubble1) ImageView ivBubble1;
+    @Bind(R.id.ivBubble1)
+    ImageView ivBubble1;
     @Bind(R.id.ivBubble2) ImageView ivBubble2;
     @Bind(R.id.ivBubble3) ImageView ivBubble3;
     public Pager2(Context context) {

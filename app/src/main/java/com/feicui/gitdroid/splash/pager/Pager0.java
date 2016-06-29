@@ -8,7 +8,7 @@ import android.widget.FrameLayout;
 import com.feicui.gitdroid.R;
 
 /**
- * Created by Administrator on 2016/6/28.
+ * Created by Administrator on 2016/6/29.
  */
 public class Pager0 extends FrameLayout {
     public Pager0(Context context) {
