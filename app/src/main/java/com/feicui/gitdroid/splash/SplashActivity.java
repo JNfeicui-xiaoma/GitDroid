@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.feicui.gitdroid.MainActivity;
+import com.feicui.gitdroid.repo.MainActivity;
 import com.feicui.gitdroid.R;
 import com.feicui.gitdroid.commonUtil.ActivityUtil;
 
