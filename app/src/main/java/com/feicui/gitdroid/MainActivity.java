@@ -3,8 +3,11 @@ package com.feicui.gitdroid;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -17,22 +20,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView mNavigationView;
     @Bind(R.id.drawerLayout)
     DrawerLayout drawerLayout;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    private MenuItem mMenuItem;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
     }
 
     @Override
     public void onContentChanged() {
         super.onContentChanged();
         ButterKnife.bind(this);
+        //ActionBar的处理
+        setSupportActionBar(toolbar);
         mNavigationView.setNavigationItemSelectedListener(this);
+        //设置Toolbar 左上角切换侧滑菜单的按钮
+        ActionBarDrawerToggle toggle=new ActionBarDrawerToggle(
+                this,drawerLayout,toolbar,R.string.navigation_drawer_open,R.string.navigation_drawer_close
+        );
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        //默认第一个menu项为最热门
+        mMenuItem=mNavigationView.getMenu().findItem(R.id.github_hot_repo);
+        mMenuItem.setChecked(true);
     }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        if (mMenuItem.isChecked()){
+            mMenuItem.setChecked(false);
+        }
         switch (item.getItemId()){
             case R.id.github_hot_repo:
                 Toast.makeText(MainActivity.this, "最热门", Toast.LENGTH_SHORT).show();
