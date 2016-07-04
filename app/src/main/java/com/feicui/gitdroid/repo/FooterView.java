@@ -25,20 +25,20 @@ public class FooterView extends FrameLayout{
     private static final int STATE_COMPLETE=1;
     private static final int STATE_ERROR=2;
 
-    @Bind(R.id.progressBar)
-    ProgressBar mProgressBar;
-    @Bind(R.id.tv_complete)
-    TextView tv_complete;
+    @Bind(R.id.progressBar) ProgressBar mProgressBar;
+
+    @Bind(R.id.tv_complete) TextView tv_complete;
+
     @Bind(R.id.tv_error) TextView tv_error;
 
     //默认为加载中状态
     private int state= STATE_LOADING;
     public FooterView(Context context) {
-        super(context,null);
+        this(context,null);
     }
 
     public FooterView(Context context, AttributeSet attrs) {
-        super(context, attrs,0);
+        this(context, attrs,0);
     }
 
     public FooterView(Context context, AttributeSet attrs, int defStyleAttr) {

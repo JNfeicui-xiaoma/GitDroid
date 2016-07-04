@@ -13,7 +13,9 @@ import android.widget.Toast;
 
 import com.feicui.gitdroid.R;
 import com.feicui.gitdroid.commonUtil.LoadMoreView;
+import com.feicui.gitdroid.commonUtil.PtrPageView;
 import com.feicui.gitdroid.commonUtil.PtrView;
+import com.hannesdorfmann.mosby.mvp.MvpFragment;
 import com.mugen.Mugen;
 import com.mugen.MugenCallbacks;
 
@@ -31,21 +33,14 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
 /**
  * Created by Administrator on 2016/6/30.
  */
-public class RepoListFragment extends Fragment implements PtrView<List<String>>, LoadMoreView<List<String>> {
+public class RepoListFragment extends MvpFragment<PtrPageView,ReopListPresenter> implements PtrPageView {
 
-    @Bind(R.id.lvRepos)
-    ListView listView;
-    @Bind(R.id.ptrClassicFrameLayout)
-    PtrClassicFrameLayout mPtrClassicFrameLayout;
-    @Bind(R.id.errorView)
-    TextView errorView;
-    @Bind(R.id.emptyView)
-    TextView emptyView;
+    @Bind(R.id.lvRepos)ListView listView;
+    @Bind(R.id.ptrClassicFrameLayout) PtrClassicFrameLayout mPtrClassicFrameLayout;
+    @Bind(R.id.errorView) TextView errorView;
+    @Bind(R.id.emptyView) TextView emptyView;
     private ArrayAdapter<String> adapter;
-    private List<String> datas = new ArrayList<>();
-    private static int count;
     private FooterView footerView;//上拉加载更多视图
-
     public static RepoListFragment getInstance(String language) {
         RepoListFragment repoListFragment = new RepoListFragment();
         Bundle bundle = new Bundle();
@@ -54,24 +49,29 @@ public class RepoListFragment extends Fragment implements PtrView<List<String>>,
         return repoListFragment;
     }
 
+    @Override
+    public ReopListPresenter createPresenter() {
+        return new ReopListPresenter();
+    }
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_repo_list, container, false);
     }
 
+
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-
         adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1);
         listView.setAdapter(adapter);
         //下拉刷新
         mPtrClassicFrameLayout.setPtrHandler(new PtrDefaultHandler() {
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
-                loadData();
+                getPresenter().loadData();
             }
         });
         footerView = new FooterView(getContext());
@@ -80,14 +80,15 @@ public class RepoListFragment extends Fragment implements PtrView<List<String>>,
             @Override
             public void onLoadMore() {
                 Toast.makeText(getContext(), "loadMore...", Toast.LENGTH_SHORT).show();
-//                loadMore();
+                getPresenter().loadMore();
             }
 
+            // 是否正在加载，此方法用来避免重复加载
             @Override
             public boolean isLoading() {
                 return listView.getFooterViewsCount() > 0 && footerView.isLoading();
             }
-
+            // 是否所有数据都已加载
             @Override
             public boolean hasLoadedAllItems() {
                 return listView.getFooterViewsCount() > 0 && footerView.isComplete();
@@ -106,48 +107,6 @@ public class RepoListFragment extends Fragment implements PtrView<List<String>>,
         ButterKnife.unbind(this);
     }
 
-    //视图层业务逻辑
-    @OnClick({R.id.emptyView, R.id.errorView})
-    public void loadData() {
-        final int size = new Random().nextInt(5);
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    return;
-                }
-                datas.clear();
-                for (int i = 1; i < size; i++) {
-                    count++;
-                    datas.add("我是第" + count + "条数据");
-                }
-                asyncLoadData(size);
-            }
-        }).start();
-    }
-
-    private void asyncLoadData(final int size) {
-        mPtrClassicFrameLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                //模拟空数据时的情况
-                if (size == 0) {
-                    showEmptyView();//listView不可见 空的TextView可见
-                } else if (size == 1) {//模拟错误数据时的情况
-                    showErroView("unknow erro");
-                } else {//模拟正常获取数据
-                    showContentView();
-                    //视图进行刷新
-                    refreshData(datas);
-                }
-                //停止结束这次下拉刷新
-                stopRefersh();
-            }
-        });
-    }
 
     //这是视图的实现
     @Override
@@ -174,42 +133,13 @@ public class RepoListFragment extends Fragment implements PtrView<List<String>>,
     @Override
     public void refreshData(List<String> strings) {
         adapter.clear();
-        adapter.addAll(datas);
-        adapter.notifyDataSetChanged();
+        adapter.addAll(strings);
+//        adapter.notifyDataSetChanged();
     }
 
     @Override
     public void stopRefersh() {
         mPtrClassicFrameLayout.refreshComplete();//下拉刷新完成
-    }
-
-    //这是上拉加载更多的视图层的业务逻辑
-    private void loadMore() {
-        //显示加载中...
-        showLoadMoreLoading();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                final ArrayList<String> loadDatas = new ArrayList<String>();
-                for (int i = 0; i < 10; i++) {
-                    loadDatas.add("我是loadMore的第" + i + "条数据");
-                }
-                mPtrClassicFrameLayout.post(new Runnable() {
-                    @Override
-                    public void run() {
-//                      将加载到数据添加到视图上
-                        addMoreData(loadDatas);
-                        //隐藏加载中...
-                        hideLoadMore();
-                    }
-                });
-            }
-        }).start();
     }
 
     @Override
@@ -225,9 +155,8 @@ public class RepoListFragment extends Fragment implements PtrView<List<String>>,
 
     @Override
     public void hideLoadMore() {
-        listView.removeView(footerView);
+        listView.removeFooterView(footerView);
     }
-
     @Override
     public void showLoadMoreLoading() {
         if (listView.getFooterViewsCount() == 0) {
