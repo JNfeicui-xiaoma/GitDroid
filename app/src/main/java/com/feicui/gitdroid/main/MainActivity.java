@@ -1,5 +1,6 @@
-package com.feicui.gitdroid.repo;
+package com.feicui.gitdroid.main;
 
+import android.content.Intent;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,9 +12,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.feicui.gitdroid.R;
+import com.feicui.gitdroid.commonUtil.ActivityUtil;
+import com.feicui.gitdroid.login.LoginActivity;
+import com.feicui.gitdroid.repo.HotRepoFragment;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -28,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Toolbar toolbar;
     private MenuItem mMenuItem;
     private HotRepoFragment mHotRepoFragment;
+    private Button btnLogin;
+    private ActivityUtil mActivityUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +64,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mHotRepoFragment = new HotRepoFragment();
         replaceFragment(mHotRepoFragment);
 
+        btnLogin= (Button)ButterKnife.findById(mNavigationView.getHeaderView(0),R.id.btnLogin);
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                mActivityUtil.startActivity(LoginActivity.class);
+                Intent intent=new Intent(MainActivity.this,LoginActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void replaceFragment(Fragment fragment) {

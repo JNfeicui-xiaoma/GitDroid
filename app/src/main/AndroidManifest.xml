@@ -2,13 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.feicui.gitdroid">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/touxiang"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".repo.MainActivity"
+        <activity android:name=".main.MainActivity"
             android:screenOrientation="portrait"
             >
 
@@ -20,6 +21,12 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        
+        <activity android:name=".login.LoginActivity"
+                  android:screenOrientation="portrait">
+
+        </activity>
     </application>
+    
 
 </manifest>

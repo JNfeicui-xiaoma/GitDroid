@@ -6,7 +6,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.feicui.gitdroid.repo.MainActivity;
+import com.feicui.gitdroid.login.LoginActivity;
+import com.feicui.gitdroid.main.MainActivity;
 import com.feicui.gitdroid.R;
 import com.feicui.gitdroid.commonUtil.ActivityUtil;
 
@@ -39,6 +40,7 @@ public class SplashActivity extends AppCompatActivity {
         switch (view.getId()){
             case R.id.btnLogin:
                 Toast.makeText(SplashActivity.this, "login", Toast.LENGTH_SHORT).show();
+                mActivityUtil.startActivity(LoginActivity.class);
                 break;
             case R.id.btnEnter:
                 mActivityUtil.startActivity(MainActivity.class);
