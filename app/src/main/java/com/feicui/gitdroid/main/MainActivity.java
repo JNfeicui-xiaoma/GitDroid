@@ -14,28 +14,31 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.feicui.gitdroid.R;
 import com.feicui.gitdroid.commonUtil.ActivityUtil;
+import com.feicui.gitdroid.favorite.FavoriteFragment;
 import com.feicui.gitdroid.login.LoginActivity;
+import com.feicui.gitdroid.login.model.CurrentUser;
 import com.feicui.gitdroid.repo.HotRepoFragment;
+import com.feicui.gitdroid.repo.repoInfo.RepoInfoActivity;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    @Bind(R.id.navigationView)
-    NavigationView mNavigationView;
-    @Bind(R.id.drawerLayout)
-    DrawerLayout drawerLayout;
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
+    @Bind(R.id.navigationView) NavigationView mNavigationView;
+    @Bind(R.id.drawerLayout) DrawerLayout drawerLayout;
+    @Bind(R.id.toolbar) Toolbar toolbar;
     private MenuItem mMenuItem;
     private HotRepoFragment mHotRepoFragment;
+    private FavoriteFragment mFavoriteFragment;
     private Button btnLogin;
-    private ActivityUtil mActivityUtil;
+    private ImageView ivIcon;//yonghu头像
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +76,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intent);
             }
         });
+        ivIcon = (ImageView) ButterKnife.findById(mNavigationView.getHeaderView(0), R.id.ivIcon);
     }
 
+    @Override protected void onStart() {
+        super.onStart();
+        // 还没有授权登陆
+        if(CurrentUser.isEmpty()){
+            btnLogin.setText(R.string.login_github);
+//            Toast.makeText(MainActivity.this, CurrentUser.getAccessToken()+CurrentUser.getUser().getName(), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // 已经授权登陆
+        btnLogin.setText(R.string.switch_account);
+        getSupportActionBar().setTitle(CurrentUser.getUser().getName());
+        // 设置用户头像
+        String photoUrl = CurrentUser.getUser().getAvatar();
+        ImageLoader.getInstance().displayImage(photoUrl,ivIcon);
+    }
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -89,15 +108,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         switch (item.getItemId()) {
             case R.id.github_hot_repo:
-                Toast.makeText(MainActivity.this, "最热门", Toast.LENGTH_SHORT).show();
+                if (!mHotRepoFragment.isAdded()){
+                    replaceFragment(mHotRepoFragment);
+                }
                 break;
             case R.id.arsenal_my_repo:
-                Toast.makeText(MainActivity.this, "我的收藏", Toast.LENGTH_SHORT).show();
+                if (mFavoriteFragment==null) mFavoriteFragment=new FavoriteFragment();
+                if (!mFavoriteFragment.isAdded()){
+                    replaceFragment(mFavoriteFragment);
+                }
                 break;
             case R.id.tips_daily:
                 Toast.makeText(MainActivity.this, "每日干货", Toast.LENGTH_SHORT).show();
                 break;
         }
+        drawerLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                drawerLayout.closeDrawer(GravityCompat.START);
+            }
+        });
         //返回true  代表将该菜单项变为checked状态
         return true;
     }
