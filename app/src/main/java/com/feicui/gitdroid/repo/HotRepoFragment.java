@@ -45,4 +45,6 @@ public class HotRepoFragment extends Fragment {
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
+
+
 }
